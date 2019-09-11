@@ -71,11 +71,11 @@ end
         b0_q = 0.75;
     % yaw rate ADRC
         %快速因子
-        r_r = 50.0;
+        r_r = 2.0;
         %滤波因子
         h0_r = 0.01;
         %eso b0因子
-        b0_r = 1.75;        
+        b0_r = 1;        
         
 % roll rate ADRC
     input_p  = Quad.p_des;

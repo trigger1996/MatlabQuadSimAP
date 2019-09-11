@@ -59,9 +59,9 @@ Quad.theta_KD = -0.5;   % KD value in pitch control -.5
 Quad.theta_max = pi/4; % Maximum pitch angle commanded
 Quad.theta_KI_lim = 2*(2*pi/360);  % Error to start calculating integral 
 
-Quad.psi_KP = 0.35;     % KP value in yaw control
-Quad.psi_KI = 0;        % KI value in yaw control .75
-Quad.psi_KD = -0.1;     % KD value in yaw control -.5
+Quad.psi_KP = 0.30;     % KP value in yaw control
+Quad.psi_KI = 0.0;        % KI value in yaw control .75
+Quad.psi_KD = -0.65;     % KD value in yaw control -.5
 Quad.psi_KI_lim = 8*(2*pi/360);  % Error to start calculating integral 
 
 
