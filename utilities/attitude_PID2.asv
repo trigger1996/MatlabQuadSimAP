@@ -6,7 +6,7 @@
 % (PID) for the quadrotor. A lower level controller takes those inputs and 
 % controls the error between the deisred and actual Euler angles. 
 
-function inner_PID
+function attitude_PID2
 
 persistent z_error_sum;
 persistent phi_error_sum;
@@ -46,6 +46,24 @@ phi = Quad.phi;
 theta = Quad.theta;
 psi = Quad.psi;
 
+% re-estimate parameters
+Quad.phi_KP = 1.5;      % KP value in roll control 2
+Quad.phi_KI = 1;       % KI value in roll control   1        
+Quad.phi_KD = -0.5;     % KD value in roll control  -.5
+Quad.phi_max = pi/4;   % Maximum roll angle commanded
+Quad.phi_KI_lim = 2*(2*pi/360);  % Error to start calculating integral 
+
+Quad.theta_KP = 1.5;    % KP value in pitch control 2
+Quad.theta_KI = 1;     % KI value in pitch control 1
+Quad.theta_KD = -0.1;   % KD value in pitch control -.5
+Quad.theta_max = pi/4; % Maximum pitch angle commanded
+Quad.theta_KI_lim = 2*(2*pi/360);  % Error to start calculating integral 
+
+Quad.psi_KP = 2.5;     % KP value in yaw control
+Quad.psi_KI = 0;     % KI value in yaw control .75
+Quad.psi_KD = 0.1;     % KD value in yaw control -.5
+Quad.psi_KI_lim = 8*(2*pi/360);  % Error to start calculating integral 
+
 
 %% Z Position PID Controller/Altitude Controller
 z_error = Quad.Z_des_GF-Quad.Z_BF;
@@ -72,7 +90,7 @@ ci = Quad.phi_KI*Quad.Ts*phi_error_sum;
 ci = min(Quad.p_max, max(-Quad.p_max, ci));
 cd = Quad.phi_KD*Quad.p;
 Quad.p_des = cp + ci + cd;
-Quad.p_des = min(Quad.p_max, max(-Quad.p_max, Quad.p_des));
+Quad.p_des = min(Quad.p_max, max(-Quad.p_max, Quad.p_des)) * 0.45;
 
 % Pitch PID Controller
 theta_error = Quad.theta_des - theta;
@@ -84,7 +102,7 @@ ci = Quad.theta_KI*Quad.Ts*theta_error_sum;
 ci = min(Quad.q_max, max(-Quad.q_max, ci));
 cd = Quad.theta_KD*Quad.q;
 Quad.q_des = cp + ci + cd;
-Quad.q_des = min(Quad.q_max, max(-Quad.q_max, Quad.q_des));
+Quad.q_des = min(Quad.q_max, max(-Quad.q_max, Quad.q_des)) * 0.45;
 
 
 % Yaw PID Controller
@@ -97,7 +115,7 @@ ci = Quad.psi_KI*Quad.Ts*psi_error_sum;
 ci = min(Quad.r_max, max(-Quad.r_max, ci));
 cd = Quad.psi_KD*Quad.r;
 Quad.r_des = cp + ci + cd;
-Quad.r_des = min(Quad.r_max, max(-Quad.r_max, Quad.r_des));
+Quad.r_des = min(Quad.r_max, max(-Quad.r_max, Quad.r_des)) * 0.45;
 
 end
 

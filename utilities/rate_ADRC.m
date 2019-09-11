@@ -57,23 +57,23 @@ end
 % initiate params
     % roll rate ADRC
         %快速因子
-        r_p = 1000.0;
+        r_p = 50.0;
         %滤波因子
-        h0_p = 0.005;
+        h0_p = 0.01;
         %eso b0因子
         b0_p = 0.75;
     % roll rate ADRC
         %快速因子
-        r_q = 1000.0;
+        r_q = 50.0;
         %滤波因子
-        h0_q = 0.005;
+        h0_q = 0.01;
         %eso b0因子
         b0_q = 0.75;
     % yaw rate ADRC
         %快速因子
-        r_r = 1000.0;
+        r_r = 50.0;
         %滤波因子
-        h0_r = 0.005;
+        h0_r = 0.01;
         %eso b0因子
         b0_r = 1;        
         
@@ -143,20 +143,20 @@ end
 
     %线性eso模块
     [z1_r_last,z2_r_last,z3_r_last] = leso3(z1_r_last,z2_r_last,z3_r_last, ...
-                                            20, ...
+                                            35, ...
                                             u_r,b0_r,feedback_r,ts);
     z1_r = z1_r_last;
     z2_r = z2_r_last;
     z3_r = z3_r_last;
     
 % roll
-    Quad.U2 = u_p * 10^(-3);
+    Quad.U2 = u_p * 1.0 * 10^(-3);
     Quad.U2 = min(Quad.U2_max, max(Quad.U2_min, Quad.U2));
 % pitch
-    Quad.U3 = u_q * 10^(-3);
+    Quad.U3 = u_q * 1.0 * 10^(-3);
     Quad.U3 = min(Quad.U3_max, max(Quad.U3_min, Quad.U3));
 % yaw
-    Quad.U4 = u_r * 10^(-3);
+    Quad.U4 = u_r * 1.0 * 10^(-3);
     Quad.U4 = min(Quad.U4_max, max(Quad.U4_min, Quad.U4));
     
 end

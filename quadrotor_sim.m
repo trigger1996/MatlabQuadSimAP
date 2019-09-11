@@ -40,12 +40,16 @@ while Quad.t_plot(Quad.counter-1)< max(Quad.t_plot);
 %     Kalman_Y2;
     
     % Implement Controller
-    position_PID;
-    attitude_PID;           % 可以在这个基础上修改，外环保留以便使用定高功能，底下画图也要开大一点
-    Quad.p_des = 0;
-    Quad.q_des = 0;
-    Quad.r_des = 0;
+    %position_PID;
+    %attitude_PID;
     %rate_PID;
+    
+    % ADRC Controller
+	position_PID;
+    Quad.phi_des = 0. * pi / 180;
+    Quad.theta_des = 0. * pi / 180;
+    Quad.psi_des = 15. * pi / 180;
+    attitude_PID2;
     rate_ADRC;
     
     % Calculate Desired Motor Speeds
