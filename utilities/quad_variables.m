@@ -9,10 +9,10 @@ global Quad;
 %% Initialize Variables
 
 % Simulation Parameters
-Quad.init = 0;          % used in initilization 
-Quad.Ts = .01;          % Sampling time (100 Hz)
-Quad.sim_time = 50;     % Simulation time (seconds)     alternative values: 10, 15, 25, 50
-Quad.counter = 1;       % the counter that holds the time value
+Quad.init = 0;              % used in initilization         
+Quad.Ts = .005;             % Sampling time (200 Hz)        alternative values: .01 (100Hz)
+Quad.sim_time = 50;         % Simulation time (seconds)     alternative values: 10, 15, 25, 50
+Quad.counter = 1;           % the counter that holds the time value
 
 % Plotting Variables
 Quad.t_plot = [0:Quad.Ts:Quad.sim_time-Quad.Ts];       % the time values
