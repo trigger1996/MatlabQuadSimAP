@@ -45,10 +45,10 @@ while Quad.t_plot(Quad.counter-1)< max(Quad.t_plot);
     %rate_PID;
     
     % ADRC Controller
-    Quad.X_des = 0;
-    Quad.Y_des = 0;
-    Quad.Z_des = 0;
-	position_PID2;
+    Quad.X_des_GF = 5;
+    Quad.Y_des_GF = 5;
+    Quad.Z_des_GF = -2;
+    position_adrc;
     %Quad.phi_des = 0. * pi / 180;
     %Quad.theta_des = 0. * pi / 180;
     %Quad.psi_des = 90. * pi / 180;

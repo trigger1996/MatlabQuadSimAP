@@ -11,7 +11,7 @@ global Quad;
 % Simulation Parameters
 Quad.init = 0;     % used in initilization 
 Quad.Ts = .01;     % Sampling time (100 Hz)
-Quad.sim_time = 50; % Simulation time (seconds)                             alternative values: 10, 15, 25
+Quad.sim_time = 25; % Simulation time (seconds)                             alternative values: 10, 15, 25
 Quad.counter = 1;                      % the counter that holds the time value
 
 % Plotting Variables
@@ -194,3 +194,53 @@ Quad.r_KI = 1;     % KI value in pitch control
 Quad.r_KD = -.01;   % KD value in pitch control
 Quad.r_max = 50*(2*pi/360); % Maximum pitch angle commanded
 Quad.r_KI_lim = 10*(2*pi/360);  % Error to start calculating integral 
+
+% ADRC Parameters
+% initiate params
+    % roll rate ADRC
+        %快速因子
+        Quad.r_p = 50.0;
+        %滤波因子
+        Quad.h0_p = 0.01;
+        %eso b0因子
+        Quad.b0_p = 0.75;
+        % leso权重 / 控制器带宽
+        Quad.w_p = 50;
+    % roll rate ADRC
+        %快速因子
+        Quad.r_q = 50.0;
+        %滤波因子
+        Quad.h0_q = 0.01;
+        %eso b0因子
+        Quad.b0_q = 0.75;
+        % leso权重 / 控制器带宽
+        Quad.w_q = 50;        
+    % yaw rate ADRC
+        %快速因子
+        Quad.r_r = 50.0;
+        %滤波因子
+        Quad.h0_r = 0.01;
+        %eso b0因子
+        Quad.b0_r = 1.75;
+        % leso权重 / 控制器带宽
+        Quad.w_r = 35;        
+
+% position vector
+        %快速因子
+        Quad.r_X = 1000.0;
+        %滤波因子
+        Quad.h0_X = 0.1;
+        %eso b0因子
+        Quad.b0_X = 0.75;
+        % leso权重 / 控制器带宽
+        Quad.w_X = 75;
+        
+        %快速因子
+        Quad.r_Y = 1000.0;
+        %滤波因子
+        Quad.h0_Y = 0.1;
+        %eso b0因子
+        Quad.b0_Y = 0.75;
+        % leso权重 / 控制器带宽
+        Quad.w_Y = 75;
+ 

@@ -23,15 +23,15 @@ if Quad.init==0
     y_error_sum = 0;
 end
 
-Quad.X_KP = .25;          % KP value in X position control
-Quad.X_KI = .15;            % KI value in X position control
-Quad.X_KD = -.65;         % KD value in X position control
-Quad.X_KI_lim = .15;         % Error to start calculating integral term
+Quad.X_KP = .05;                % KP value in X position control
+Quad.X_KI = .05;                % KI value in X position control
+Quad.X_KD = -.33;               % KD value in X position control
+Quad.X_KI_lim = .15;            % Error to start calculating integral term
 
-Quad.Y_KP = .25;          % KP value in Y position control
-Quad.Y_KI = .15;            % KI value in Y position control
-Quad.Y_KD = -.65;         % KD value in Y position control
-Quad.Y_KI_lim = .15;         % Error to start calculating integral term
+Quad.Y_KP = .05;                % KP value in Y position control
+Quad.Y_KI = .05;                % KI value in Y position control
+Quad.Y_KD = -.33;               % KD value in Y position control
+Quad.Y_KI_lim = .15;            % Error to start calculating integral term
 
 %% High Level Position Controller
 

@@ -48,41 +48,18 @@ if Quad.init==0
 
         z1_r = 0;
         z2_r = 0;
-        z3_r  =0;
+        z3_r = 0;
         z1_r_last = 0;
         z2_r_last = 0;
         z3_r_last = 0;        
-end
-
-% initiate params
-    % roll rate ADRC
-        %快速因子
-        r_p = 50.0;
-        %滤波因子
-        h0_p = 0.01;
-        %eso b0因子
-        b0_p = 0.75;
-    % roll rate ADRC
-        %快速因子
-        r_q = 50.0;
-        %滤波因子
-        h0_q = 0.01;
-        %eso b0因子
-        b0_q = 0.75;
-    % yaw rate ADRC
-        %快速因子
-        r_r = 50.0;
-        %滤波因子
-        h0_r = 0.01;
-        %eso b0因子
-        b0_r = 1.75;        
+end 
         
 % roll rate ADRC
     input_p  = Quad.p_des;
     feedback_p = Quad.p;
 
     %ts 模块 构造过渡过程
-    [x1_p_last,x2_p_last] = td3(x1_p_last,x2_p_last,input_p,r_p,ts,h0_p);
+    [x1_p_last,x2_p_last] = td3(x1_p_last,x2_p_last,input_p,Quad.r_p,ts,Quad.h0_p);
     x1_p = x1_p_last;
     x2_p = x2_p_last;
     %产生误差
@@ -91,12 +68,12 @@ end
     %产生控制量
     u0 = nlsef3(e1_p,e2_p,0.3,5,0.03);
     %减去z3
-    u_p = u0 - z3_p_last*1/b0_p;
+    u_p = u0 - z3_p_last*1/Quad.b0_p;
 
     %线性eso模块
     [z1_p_last,z2_p_last,z3_p_last] = leso3(z1_p_last,z2_p_last,z3_p_last, ...
-                                            50, ...
-                                            u_p,b0_p,feedback_p,ts);
+                                            Quad.w_p, ...
+                                            u_p,Quad.b0_p,feedback_p,ts);
     z1_p = z1_p_last;
     z2_p = z2_p_last;
     z3_p = z3_p_last;
@@ -106,7 +83,7 @@ end
     feedback_q = Quad.q;
 
     %ts 模块 构造过渡过程
-    [x1_q_last,x2_q_last] = td3(x1_q_last,x2_q_last,input_q,r_q,ts,h0_q);
+    [x1_q_last,x2_q_last] = td3(x1_q_last,x2_q_last,input_q,Quad.r_q,ts,Quad.h0_q);
     x1_q = x1_q_last;
     x2_q = x2_q_last;
     %产生误差
@@ -115,12 +92,12 @@ end
     %产生控制量
     u0 = nlsef3(e1_q,e2_q,0.3,5,0.03);
     %减去z3
-    u_q = u0 - z3_q_last*1/b0_q;
+    u_q = u0 - z3_q_last*1/Quad.b0_q;
 
     %线性eso模块
     [z1_q_last,z2_q_last,z3_q_last] = leso3(z1_q_last,z2_q_last,z3_q_last, ...
-                                            50, ...
-                                            u_q,b0_q,feedback_q,ts);
+                                            Quad.w_q, ...
+                                            u_q,Quad.b0_q,feedback_q,ts);
     z1_q = z1_q_last;
     z2_q = z2_q_last;
     z3_q = z3_q_last;    
@@ -130,7 +107,7 @@ end
     feedback_r = Quad.r;
 
     %ts 模块 构造过渡过程
-    [x1_r_last,x2_r_last] = td3(x1_r_last,x2_r_last,input_r,r_r,ts,h0_r);
+    [x1_r_last,x2_r_last] = td3(x1_r_last,x2_r_last,input_r,Quad.r_r,ts,Quad.h0_r);
     x1_r = x1_r_last;
     x2_r = x2_r_last;
     %产生误差
@@ -139,12 +116,12 @@ end
     %产生控制量
     u0 = nlsef3(e1_r,e2_r,0.3,5,0.03);
     %减去z3
-    u_r = u0 - z3_r_last*1/b0_r;
+    u_r = u0 - z3_r_last*1/Quad.b0_r;
 
     %线性eso模块
     [z1_r_last,z2_r_last,z3_r_last] = leso3(z1_r_last,z2_r_last,z3_r_last, ...
-                                            35, ...
-                                            u_r,b0_r,feedback_r,ts);
+                                            Quad.w_r, ...
+                                            u_r,Quad.b0_r,feedback_r,ts);
     z1_r = z1_r_last;
     z2_r = z2_r_last;
     z3_r = z3_r_last;
