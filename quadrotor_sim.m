@@ -39,19 +39,19 @@ while Quad.t_plot(Quad.counter-1)< max(Quad.t_plot);
 %     Kalman_X2;
 %     Kalman_Y2;
     
+    % set desired position
+	Quad.X_des_GF = 5;
+    Quad.Y_des_GF = 5;
+    Quad.Z_des_GF = -2;
+
     % Implement Controller
     %position_PID;
     %attitude_PID;
     %rate_PID;
     
     % ADRC Controller
-    Quad.X_des_GF = 5;
-    Quad.Y_des_GF = 5;
-    Quad.Z_des_GF = -2;
     position_adrc;
-    %Quad.phi_des = 0. * pi / 180;
-    %Quad.theta_des = 0. * pi / 180;
-    %Quad.psi_des = 90. * pi / 180;
+    %position_PID2;                 % for reference
     attitude_PID2;
     rate_ADRC;
     
