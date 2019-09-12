@@ -40,8 +40,8 @@ while Quad.t_plot(Quad.counter-1)< max(Quad.t_plot);
 %     Kalman_Y2;
     
     % set desired position
-	Quad.X_des_GF = 5 * cos(Quad.counter * Quad.Ts / 5);        % Quad.X_des_GF = 5;
-    Quad.Y_des_GF = 5 * sin(Quad.counter * Quad.Ts / 5);        % Quad.Y_des_GF = 5;
+	Quad.X_des_GF = 2 * cos(;
+    Quad.Y_des_GF = 5;
     Quad.Z_des_GF = -2;
 
     % Implement Controller
