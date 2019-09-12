@@ -10,7 +10,7 @@
 % inputs are calculated, the desired motor speeds are calculated. See
 % www.wilselby.com for derivations of these equations.
 
-function position_adrc
+function position_NLPID
 
 persistent x_error_sum;
 persistent y_error_sum;
@@ -143,8 +143,7 @@ ci = Quad.X_KI*Quad.Ts*x_error_sum;
 ci = min(Quad.theta_max, max(-Quad.theta_max, ci));    %Saturate ci
 cd = Quad.X_KD*Quad.X_BF_dot;                     %Derivative term
 Quad.theta_des =  - (cp + ci + cd);   %Theta and X inversely related
-
-Quad.theta_des = fal(Quad.theta_des, Qua
+Quad.theta_des = fal2(Quad.theta_des, 2, 0.707*Quad.theta_max);
 
 Quad.theta_des = min(Quad.theta_max, max(-Quad.theta_max, Quad.theta_des));
 Quad.theta_des = Quad.theta_des * 0.33;
@@ -176,6 +175,7 @@ ci = Quad.Y_KI*Quad.Ts*y_error_sum;
 ci = min(Quad.phi_max, max(-Quad.phi_max, ci));    %Saturate ci
 cd = Quad.Y_KD*Quad.Y_BF_dot;                      %Derivative term
 Quad.phi_des = cp + ci + cd;
+Quad.phi_des = fal2(Quad.phi_des, 2, 0.707*Quad.phi_max);
 
 
 Quad.phi_des = min(Quad.phi_max, max(-Quad.phi_max, Quad.phi_des));
@@ -226,10 +226,10 @@ end
         end
     end
     
-    function fe = fal(error, pow_, threshold)
+    function fe = fal2(error, pow_, threshold)
         if abs(error) > threshold
-            fe = math.pow(abs(error), pow_) * sign(error);
+            fe = abs(error)^pow_ * sign(error);
         else
-            fe = error / math.pow(threshold, pow_);
+            fe = error;         % error / threshold^pow_
         end
     end

@@ -50,9 +50,9 @@ while Quad.t_plot(Quad.counter-1)< max(Quad.t_plot);
     %rate_PID;
     
     % ADRC Controller
-    position_adrc;
-    %position_PID2;                 % for reference
-    attitude_PID2;
+    position_NLPID;
+    %position_PID2;                 % standard PID for reference
+    attitude_NLPID;
     rate_ADRC;
     
     % Calculate Desired Motor Speeds

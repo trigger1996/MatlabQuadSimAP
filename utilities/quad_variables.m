@@ -225,22 +225,31 @@ Quad.r_KI_lim = 10*(2*pi/360);  % Error to start calculating integral
         % leso权重 / 控制器带宽
         Quad.w_r = 35;        
 
-% position vector
+% position params
         %快速因子
-        Quad.r_X = 1000.0;
+        Quad.r_X = 10.0;
         %滤波因子
-        Quad.h0_X = 0.1;
+        Quad.h0_X = 0.01;
         %eso b0因子
         Quad.b0_X = 0.75;
         % leso权重 / 控制器带宽
-        Quad.w_X = 75;
+        Quad.w_X = 45;
         
         %快速因子
-        Quad.r_Y = 1000.0;
+        Quad.r_Y = 10.0;
         %滤波因子
-        Quad.h0_Y = 0.1;
+        Quad.h0_Y = 0.01;
         %eso b0因子
         Quad.b0_Y = 0.75;
         % leso权重 / 控制器带宽
-        Quad.w_Y = 75;
+        Quad.w_Y = 45;
+        
+         %快速因子
+        Quad.r_Z = 15.0;
+        %滤波因子
+        Quad.h0_Z = 0.01;
+        %eso b0因子
+        Quad.b0_Z = 1.05;
+        % leso权重 / 控制器带宽
+        Quad.w_Z = 25;
  

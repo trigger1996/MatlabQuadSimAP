@@ -6,12 +6,17 @@
 % (PID) for the quadrotor. A lower level controller takes those inputs and 
 % controls the error between the deisred and actual Euler angles. 
 
-function attitude_PID2
+function attitude_NLPID
 
 persistent z_error_sum;
 persistent phi_error_sum;
 persistent theta_error_sum;
 persistent psi_error_sum;
+
+% NLPID for Z control
+persistent x1_Z x2_Z x1_Z_last x2_Z_last
+persistent z1_Z z2_Z z3_Z z1_Z_last z2_Z_last z3_Z_last
+persistent u_Z
 
 % NLPID for rpy control
 % roll
@@ -38,7 +43,22 @@ if Quad.init==0
     theta_error_sum = 0;
     psi_error_sum = 0;
     
-	% roll
+    % Z
+        x1_Z = 0;
+        x2_Z = 0;
+        x1_Z_last = 0;
+        x2_Z_last = 0;
+
+        z1_Z = 0;
+        z2_Z = 0;
+        z3_Z  =0;
+        z1_Z_last = 0;
+        z2_Z_last = 0;
+        z3_Z_last = 0;
+        
+        u_Z = 0;
+        
+    % roll
         x1_phi = 0;
         x2_phi = 0;
         x1_phi_last = 0;
@@ -150,6 +170,34 @@ Quad.psi_KI_lim = 8*(2*pi/360);  % Error to start calculating integral
         b0_psi = 1.75;
 
 %% Z Position PID Controller/Altitude Controller
+
+    input_X  = Quad.X_des;
+    feedback_X = Quad.X_BF;
+
+    %td 模块 构造过渡过程
+    [x1_X_last,x2_X_last] = td3(x1_X_last,x2_X_last,input_X,Quad.r_X,Quad.Ts,Quad.h0_X);
+    x1_X = x1_X_last;
+    x2_X = x2_X_last;
+    %线性eso模块
+    [z1_X_last,z2_X_last,z3_X_last] = leso3(z1_X_last,z2_X_last,z3_X_last, ...
+                                            Quad.w_X, ...
+                                            u_X,Quad.b0_X,feedback_X,Quad.Ts);
+
+    input_Z  = Quad.Z_des;
+    feedback_Z = Quad.Z_BF;
+
+    %ts 模块 构造过渡过程
+    [x1_Z_last,x2_Z_last] = td3(x1_Z_last,x2_Z_last,input_Z,Quad.r_Z,Quad.Ts,Quad.h0_Z);
+    x1_Z = x1_Z_last;
+    x2_Z = x2_Z_last;
+	%线性eso模块
+    [z1_Z_last,z2_Z_last,z3_Z_last] = leso3(z1_Z_last,z2_Z_last,z3_Z_last, ...
+                                            Quad.w_Z, ...
+                                            u_Z,Quad.b0_Z,feedback_Z,Quad.Ts);
+    z1_Z = z1_Z_last;
+    z2_Z = z2_Z_last;
+    z3_Z = z3_Z_last;
+
 z_error = Quad.Z_des_GF-Quad.Z_BF;
 if(abs(z_error) < Quad.Z_KI_lim)
     z_error_sum = z_error_sum + z_error;
