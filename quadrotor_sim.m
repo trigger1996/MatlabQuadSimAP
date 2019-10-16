@@ -41,8 +41,12 @@ while Quad.t_plot(Quad.counter-1)< max(Quad.t_plot);
     
     % Implement Controller
     position_PID;
-    attitude_PID;
-    rate_PID;
+    %Quad.phi_des = 0;
+    %Quad.theta_des = 0;
+    %Quad.psi_des = 0;
+    %attitude_PID;
+    %rate_PID;
+    attitude_Backstepping;
     
     % Calculate Desired Motor Speeds
     quad_motor_speed;
