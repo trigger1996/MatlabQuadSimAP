@@ -9,9 +9,9 @@
 function attitude_Backstepping
 
 persistent z_error_sum;
-persistent phi_error_sum;
-persistent theta_error_sum;
-persistent psi_error_sum;
+persistent phi_error_sum   p_error_sum;
+persistent theta_error_sum q_error_sum;
+persistent psi_error_sum   r_error_sum;
 
 persistent phi_des_last   p_des_last;
 persistent theta_des_last q_des_last;
@@ -19,22 +19,22 @@ persistent psi_des_last   r_des_last;
 
 global Quad
 
-C1 = 5;
-C2 = 5;
+C1 = 4;
+C2 = 6;
 A1 = (Quad.Jy - Quad.Jz) / Quad.Jx;
 B1 = -Quad.Jp*Quad.p*Quad.Obar / Quad.Jx;
 D1 = Quad.l / Quad.Jx;
 
-C3 = 5;
-C4 = 5;
+C3 = 4;
+C4 = 6;
 A2 = (Quad.Jz - Quad.Jx) / Quad.Jy;
 B2 = Quad.Jp*Quad.p*Quad.Obar / Quad.Jy;
 D2 = Quad.l / Quad.Jy;
 
 C5 = 6;
-C6 = 6;
+C6 = 8;
 A3 = (Quad.Jx - Quad.Jy) / Quad.Jz;
-D3 = 1 / Quad.Jz;
+D3 = sqrt(2)*Quad.l / Quad.Jz;
 
 % initialize persistent variables at beginning of simulation
 if Quad.init==0
@@ -42,6 +42,10 @@ if Quad.init==0
     phi_error_sum = 0;
     theta_error_sum = 0;
     psi_error_sum = 0;
+    
+    p_error_sum = 0;
+    q_error_sum = 0;
+    r_error_sum = 0;
     
     Quad.p_des = 0;
     Quad.p_des = 0;
@@ -108,8 +112,11 @@ phi_error_diff = Quad.phi_des - phi_des_last;
 Quad.p_des = phi_error_diff + C1 * phi_error;
 p_error = Quad.p_des - Quad.p;
 p_des_diff = Quad.p_des - p_des_last;
+if(abs(p_error) < Quad.p_KI_lim)
+    p_error_sum = p_error_sum + p_error;
+end
 
-Quad.U2 = phi_error + C2 * p_error + p_des_diff - B1 * Quad.p - Quad.q * Quad.r * A1 + phi_error_sum;
+Quad.U2 = phi_error + C2 * p_error + p_des_diff - B1 * Quad.p - Quad.q * Quad.r * A1 + p_error_sum;
 Quad.U2 = Quad.U2 / D1;
 %Quad.U2 = Quad.U2 / 10;
 Quad.U2 = min(Quad.U2_max, max(Quad.U2_min, Quad.U2));
@@ -127,8 +134,11 @@ theta_error_diff = Quad.theta_des - theta_des_last;
 Quad.q_des = theta_error_diff + C3 * theta_error;
 q_error = Quad.q_des - Quad.q;
 q_des_diff = Quad.q_des - q_des_last;
+if(abs(q_error) < Quad.q_KI_lim)
+    q_error_sum = q_error_sum + q_error;
+end
 
-Quad.U3 = theta_error + C4 * q_error + q_des_diff - B2 * Quad.q - Quad.p * Quad.r * A2 + theta_error_sum;
+Quad.U3 = theta_error + C4 * q_error + q_des_diff - B2 * Quad.q - Quad.p * Quad.r * A2 + q_error_sum;
 Quad.U3 = Quad.U3 / D2;
 %Quad.U3 = Quad.U3 / 10;
 Quad.U3 = min(Quad.U3_max, max(Quad.U3_min, Quad.U3));
@@ -146,8 +156,11 @@ psi_error_diff = Quad.psi_des - psi_des_last;
 Quad.r_des = psi_error_diff + C5 * psi_error;
 r_error = Quad.r_des - Quad.r;
 r_des_diff = Quad.r_des - r_des_last;
+if(abs(r_error) < Quad.r_KI_lim)
+    r_error_sum = r_error_sum + r_error;
+end
 
-Quad.U4 = psi_error + C6 * r_error + r_des_diff - Quad.p * Quad.q * A3 + psi_error_sum;
+Quad.U4 = psi_error + C6 * r_error + r_des_diff - Quad.p * Quad.q * A3 + r_error_sum;
 Quad.U4 = Quad.U4 / D3;
 %Quad.U4 = Quad.U4 / 10;
 Quad.U4 = min(Quad.U4_max, max(Quad.U4_min, Quad.U4));

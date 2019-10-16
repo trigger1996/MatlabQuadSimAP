@@ -19,7 +19,7 @@ Quad.Z_ddot = (-[cos(Quad.phi)*cos(Quad.theta)]*Quad.U1-Quad.Kdz*Quad.Z_dot)/Qua
 
 Quad.p_dot = (Quad.q*Quad.r*(Quad.Jy - Quad.Jz) - Quad.Jp*Quad.p*Quad.Obar + Quad.l*Quad.U2)/Quad.Jx;
 Quad.q_dot = (Quad.p*Quad.r*(Quad.Jz - Quad.Jx) + Quad.Jp*Quad.q*Quad.Obar + Quad.l*Quad.U3)/Quad.Jy;
-Quad.r_dot = (Quad.p*Quad.q*(Quad.Jx - Quad.Jy) + Quad.U4)/Quad.Jz;
+Quad.r_dot = (Quad.p*Quad.q*(Quad.Jx - Quad.Jy) + sqrt(2)*Quad.l*Quad.U4)/Quad.Jz;
 
 Quad.phi_dot   = Quad.p + sin(Quad.phi)*tan(Quad.theta)*Quad.q + cos(Quad.phi)*tan(Quad.theta)*Quad.r;
 Quad.theta_dot = cos(Quad.phi)*Quad.q - sin(Quad.phi)*Quad.r;
