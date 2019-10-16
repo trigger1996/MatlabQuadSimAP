@@ -40,8 +40,8 @@ while Quad.t_plot(Quad.counter-1)< max(Quad.t_plot);
 %     Kalman_Y2;
     
     % Implement Controller
-    %position_PID;
-    position_Backstepping;
+    position_PID;
+    %position_Backstepping;     % 这个东西做错了，把推力U1当成求解量而不是角度。如果根据地面坐标系控制角度的话，角度存在在DCM矩阵内，所以非常难分离，很难做到单独求解，所以这边还是PID控制
     %Quad.phi_des = 0;
     %Quad.theta_des = 0;
     %Quad.psi_des = 0;
