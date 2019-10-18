@@ -10,7 +10,10 @@
 % inputs are calculated, the desired motor speeds are calculated. See
 % www.wilselby.com for derivations of these equations.
 
-function outer_Backstepping
+function position_Backstepping
+
+persistent x_err_last;
+persistent y_err_last;
 
 persistent x_error_sum vx_error_sum;
 persistent y_error_sum vy_error_sum;
@@ -20,21 +23,24 @@ global Quad
 persistent y_des_last vy_des_last;
 persistent x_des_last vx_des_last;
 
-C1 = 0.5;
-C2 = 0.5;
+C1 = 0.005;
+C2 = 0.005;
 A1 = -[cos(Quad.phi)*sin(Quad.theta)*cos(Quad.psi)+sin(Quad.phi)*sin(Quad.psi)] / Quad.m;
 B1 = -Quad.Kdx / Quad.m;
 
-C3 = 0.5;
-C4 = 0.5;
+C3 = 0.005;
+C4 = 0.005;
 A2 =  -[cos(Quad.phi)*sin(Quad.psi)*sin(Quad.theta)-cos(Quad.psi)*sin(Quad.phi)] / Quad.m;
 B2 = -Quad.Kdy / Quad.m;
 
-vx_KI_lim = 0.05;
-vy_KI_lim = 0.05;
+vx_KI_lim = 0.5;
+vy_KI_lim = 0.5;
 
 % initialize persistent variables at beginning of simulation
 if Quad.init==0
+    x_err_last = 0;
+    y_err_last = 0;
+    
     x_error_sum = 0;
     y_error_sum = 0;
 
@@ -87,13 +93,13 @@ psi = Quad.psi;
 
 %%
 % Rotate Desired Position from GF to BF (Z axis rotation only)
-%[Quad.X_des,Quad.Y_des,Quad.Z_des] = rotateGFtoBF(Quad.X_des_GF,Quad.Y_des_GF,Quad.Z_des_GF,0*phi,0*theta,psi);
+[Quad.X_des,Quad.Y_des,Quad.Z_des] = rotateGFtoBF(Quad.X_des_GF,Quad.Y_des_GF,Quad.Z_des_GF,0*phi,0*theta,psi);
 
 % Rotate Current Position from GF to BF
-%[Quad.X_BF,Quad.Y_BF,Quad.Z_BF] = rotateGFtoBF(x,y,z,phi,theta,psi);
+[Quad.X_BF,Quad.Y_BF,Quad.Z_BF] = rotateGFtoBF(x,y,z,phi,theta,psi);
 
 % Rotate Current Velocity from GF to BF
-%[Quad.X_BF_dot,Quad.Y_BF_dot,Quad.Z_BF_dot] = rotateGFtoBF(Quad.X_dot,Quad.Y_dot,Quad.Z_dot,phi,theta,psi);
+[Quad.X_BF_dot,Quad.Y_BF_dot,Quad.Z_BF_dot] = rotateGFtoBF(Quad.X_dot,Quad.Y_dot,Quad.Z_dot,phi,theta,psi);
 
 %%
 % Ux solver
@@ -101,40 +107,33 @@ x_error = Quad.X_des_GF - x;
 if(abs(x_error) < Quad.X_KI_lim)
     x_error_sum = x_error_sum + x_error;
 end
-x_des_diff = Quad.X_des_GF - x_des_last;
+x_err_diff = x_error - x_err_last;
 
-vx_error = Quad.X_dot - x_des_diff - C1 * x_error;
-z9  = x_error;
-z10 = vx_error;
-
-Ux = -Quad.m / Quad.U1 * (-C2*z10 + z9 - C1 * (C1 * z9 + z10));
+Ux = -Quad.m / Quad.U1 * ((C1 + C2) * x_err_diff + (1 + C1*C2) * x_error + B1 * Quad.X_dot);
 if Quad.U1 == 0
     Ux = 0;
 end
-x_des_last  = Quad.X_des_GF;
 
+x_err_last = x_error;
 
 %%
-% Uy solver
+% Ux solver
 y_error = Quad.Y_des_GF - y;
 if(abs(y_error) < Quad.Y_KI_lim)
     y_error_sum = y_error_sum + y_error;
 end
-y_des_diff = Quad.Y_des_GF - y_des_last;
+y_err_diff = y_error - y_err_last;
 
-vy_error = Quad.Y_dot - y_des_diff - C3 * y_error;
-z11 = y_error;
-z12 = vy_error;
-
-Uy = -Quad.m / Quad.U1 * (-C4*z12 + z11 - C3 * (C3 * z10 + z12));
+Uy = -Quad.m / Quad.U1 * ((C3 + C4) * y_err_diff + (1 + C3*C4) * y_error + B2 * Quad.Y_dot);
 if Quad.U1 == 0
     Uy = 0;
 end
-y_des_last  = Quad.Y_des_GF;
+
+y_err_last = y_error;
 
 %%
 Quad.phi_des = asin(Ux*sin(Quad.psi) - Uy*cos(Quad.psi));
-Quad.theta_des   = asin(Ux / (cos(Quad.phi) * cos(Quad.psi))- (sin(Quad.phi) * sin(Quad.psi)) / (cos(Quad.phi) * cos(Quad.psi)));
+Quad.theta_des   = asin((Ux*cos(Quad.psi) + Uy*sin(Quad.psi)) / cos(Quad.phi_des));
 aaa = Ux*sin(Quad.psi) - Uy*cos(Quad.psi)
 if abs(aaa) > 1
     bbb = 1;

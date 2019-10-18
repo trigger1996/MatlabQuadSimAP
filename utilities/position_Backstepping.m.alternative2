@@ -103,38 +103,47 @@ if(abs(x_error) < Quad.X_KI_lim)
 end
 x_des_diff = Quad.X_des_GF - x_des_last;
 
-vx_error = Quad.X_dot - x_des_diff - C1 * x_error;
-z9  = x_error;
-z10 = vx_error;
+vx_des   = x_des_diff + C1 * x_error;
+vx_error = vx_des - Quad.X_dot;
+vx_des_diff = vx_des - vx_des_last;
+if(abs(vx_error) < vx_KI_lim)
+    vx_error_sum = vx_error_sum + vx_error;
+end
 
-Ux = -Quad.m / Quad.U1 * (-C2*z10 + z9 - C1 * (C1 * z9 + z10));
+Ux = x_error + C2 * vx_error + vx_des_diff + B1 * Quad.X_dot + vx_error_sum;
+Ux = -Ux * Quad.m / Quad.U1;
 if Quad.U1 == 0
     Ux = 0;
 end
 x_des_last  = Quad.X_des_GF;
-
+vx_des_last = vx_des;
 
 %%
-% Uy solver
+% Ux solver
 y_error = Quad.Y_des_GF - y;
 if(abs(y_error) < Quad.Y_KI_lim)
     y_error_sum = y_error_sum + y_error;
 end
 y_des_diff = Quad.Y_des_GF - y_des_last;
 
-vy_error = Quad.Y_dot - y_des_diff - C3 * y_error;
-z11 = y_error;
-z12 = vy_error;
+vy_des   = y_des_diff + C3 * y_error;
+vy_error = vy_des - Quad.Y_dot;
+vy_des_diff = vy_des - vy_des_last;
+if(abs(vy_error) < vy_KI_lim)
+    vy_error_sum = vy_error_sum + vy_error;
+end
 
-Uy = -Quad.m / Quad.U1 * (-C4*z12 + z11 - C3 * (C3 * z10 + z12));
+Uy = y_error + C4 * vy_error + vy_des_diff + B2 * Quad.Y_dot + vy_error_sum;
+Uy = -Uy * Quad.m / Quad.U1;
 if Quad.U1 == 0
     Uy = 0;
 end
 y_des_last  = Quad.Y_des_GF;
+vy_des_last = vy_des;
 
 %%
 Quad.phi_des = asin(Ux*sin(Quad.psi) - Uy*cos(Quad.psi));
-Quad.theta_des   = asin(Ux / (cos(Quad.phi) * cos(Quad.psi))- (sin(Quad.phi) * sin(Quad.psi)) / (cos(Quad.phi) * cos(Quad.psi)));
+Quad.theta_des   = asin((Ux*cos(Quad.psi) + Uy*sin(Quad.psi)) / cos(Quad.phi_des));
 aaa = Ux*sin(Quad.psi) - Uy*cos(Quad.psi)
 if abs(aaa) > 1
     bbb = 1;
